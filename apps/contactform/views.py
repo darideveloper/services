@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from services import settings
 from django.views import View
 from django.utils.decorators import method_decorator
-from core.utils import is_spam
+from core.utils import get_is_spam, get_message_subject
 
 @method_decorator(csrf_exempt, name='dispatch')
 class Index (View):
@@ -41,20 +41,10 @@ class Index (View):
             }, status=401)
 
         # Format email body
-        message = ""
-        subject = "New contact message!"
-        for input_name, input_value in form_data.items():
-
-            # Get body values
-            if input_name not in ["api_key", "redirect", "subject", "user"]:
-                message += f"{input_name}: {input_value}\n"
-
-            # Get custom subject
-            if input_name == "subject":
-                subject = input_value
-            
+        message, subject = get_message_subject(form_data)
+        
         # Detect spam in message content
-        is_spam = is_spam(message)
+        is_spam = get_is_spam(message)
 
         if is_spam:
             # Dont send message and change subject in history
@@ -73,7 +63,7 @@ class Index (View):
         models.History.objects.create (
             user = users[0], 
             subject = subject,
-            body = message,
+            message = message,
             sent = not is_spam    
         )
         

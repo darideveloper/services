@@ -11,8 +11,4 @@ class ContactFormUserAdmin(admin.ModelAdmin):
 class ContactFormHistoryAdmin(admin.ModelAdmin):
     list_display = ('datetime', 'user', 'subject', 'sent')
     ordering = ['datetime', 'sent']
-
-@admin.register(models.BlackList)
-class ContactFormBlackListAdmin(admin.ModelAdmin):
-    list_display = ('to_email',)
-    ordering = ['to_email']
+    list_filter = ['user', 'sent']

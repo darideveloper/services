@@ -1,6 +1,6 @@
 import re
 
-def is_spam (text:str) -> bool:
+def get_is_spam (text:str) -> bool:
     """ Check if text is spam 
     
     Args:
@@ -36,3 +36,26 @@ def is_spam (text:str) -> bool:
         return True
     else:
         return False
+    
+def get_message_subject (inputs:dict) -> str:
+    """ Get message formatted from inputs
+
+    Args:
+        inputs (dict): inputs from form
+
+    Returns:
+        str: message formatted
+    """
+    message = ""
+    subject = "New contact message!"
+    for input_name, input_value in inputs.items():
+
+        # Get body values
+        if input_name not in ["api_key", "redirect", "subject", "user"]:
+            message += f"{input_name}: {input_value}\n"
+
+        # Get custom subject
+        if input_name == "subject":
+            subject = input_value
+    
+    return message, subject

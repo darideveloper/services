@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from contactform import models
 from services import settings
+from core.utils import get_message_subject
 
 class TestViews (TestCase):
     
@@ -14,11 +15,6 @@ class TestViews (TestCase):
             to_email=settings.EMAIL_HOST_USER
         )
         
-        # Create black list
-        self.black_list = models.BlackList.objects.create (
-            to_email="black-list-email@gmail.com"
-        )
-        
         # Default email info
         self.default_info = {
             "user": self.user.name,
@@ -28,13 +24,13 @@ class TestViews (TestCase):
             "sample input": "sample value",
         }
     
-    def test_black_list (self):
-        """ Try to send a message with a black list email 
+    def test_spam (self):
+        """ Try to send a message with a spam text
             Expected: regular response without sending email
         """
         
         # Add blocked email to form data and send request
-        self.default_info["blocked email"] = self.black_list.to_email
+        self.default_info["sample input"] = "buy now in https://www.google.com"
         res = self.client.post (
             reverse ("contactform_endpoint"), 
             self.default_info
@@ -44,11 +40,15 @@ class TestViews (TestCase):
         self.assertEqual (res.status_code, 302)
         self.assertEqual (res.url, self.default_info["redirect"])
         
+        # Get message from inputs
+        message, _ = get_message_subject(self.default_info)
+        
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual (history_objects.count(), 1)
         self.assertEqual (history_objects[0].user, self.user)
-        self.assertEqual (history_objects[0].subject, f"Spam try from {self.black_list.to_email}")
+        self.assertEqual (history_objects[0].subject, f"Spam try in {self.user.name}")
+        self.assertEqual (history_objects[0].message, message)
         self.assertEqual (history_objects[0].sent, False)
     
     def test_invalid_api_key (self):
@@ -133,11 +133,14 @@ class TestViews (TestCase):
         self.assertEqual (res.status_code, 302)
         self.assertEqual (res.url, self.default_info["redirect"])
         
+        message, subject = get_message_subject(self.default_info)
+        
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual (history_objects.count(), 1)
         self.assertEqual (history_objects[0].user, self.user)
-        self.assertEqual (history_objects[0].subject, "New contact message!")
+        self.assertEqual (history_objects[0].subject, subject)
+        self.assertEqual (history_objects[0].message, message)
         self.assertEqual (history_objects[0].sent, True)
     
     def test_missing_user (self):
