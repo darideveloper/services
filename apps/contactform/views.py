@@ -16,14 +16,14 @@ class Index (View):
         form_data = request.POST.dict()
 
         # Check all inputs
-        inputs_names = ["api_key", "user", "redirect"]
+        inputs_names = ["api_key", "user"]
         for input_name in inputs_names:
             if input_name not in form_data.keys():
                 return JsonResponse ({
                     "status": "error",
                     "message": f"missing {input_name} input",
                     "data": {}
-                })
+                }, status=400)
 
         # Validate api user name
         valid_login = False
@@ -37,7 +37,7 @@ class Index (View):
                 "status": "error",
                 "message": "invalid login",
                 "data": {}
-            })
+            }, status=401)
 
         # Format email body
         message = ""
@@ -68,7 +68,6 @@ class Index (View):
             # Dont send message and change subject in history
             subject = f"Spam try from {blackLiist_email_found}"
         else:
-            print (users[0].to_email)
             # Send email 
             send_mail(
                 subject,
@@ -84,5 +83,14 @@ class Index (View):
             subject = subject,
             sent = not is_spam    
         )
-
-        return HttpResponseRedirect(form_data["redirect"]) 
+        
+        # Redirect or send response
+        redirect = form_data.get("redirect", "")
+        if redirect:
+            return HttpResponseRedirect(form_data["redirect"]) 
+        else:
+            return JsonResponse ({
+                "status": "success",
+                "message": f"email sent",
+                "data": {}
+            }, status=200)
