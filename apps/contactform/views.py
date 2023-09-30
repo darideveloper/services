@@ -2,7 +2,7 @@ from contactform import models
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
-from django.conf import settings
+from services import settings
 from django.views import View
 from django.utils.decorators import method_decorator
 
@@ -68,11 +68,12 @@ class Index (View):
             # Dont send message and change subject in history
             subject = f"Spam try from {blackLiist_email_found}"
         else:
+            print (users[0].to_email)
             # Send email 
             send_mail(
                 subject,
                 message,
-                settings.EMAIL_HOST_USER
+                settings.EMAIL_HOST_USER,
                 [users[0].to_email],
                 fail_silently=False,
             )
