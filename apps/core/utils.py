@@ -21,7 +21,7 @@ def get_is_spam (text:str) -> bool:
         r"\$(\d+[\.,]?\d*)",
         
         # special words
-        r"(more\s*info|our\s*plans|seo|contact\s*us|discord|roi|convertible\s*debt|loan\s*financing|early\s*repayment\s*penalties|content\s*marketing|humanly\s*written\s*seo\s*content)",
+        r"(more\s*info|our\s*plans|seo|contact\s*us|discord|roi|convertible\s*debtfinancing|repayment|marketing)" 
         
         # percentaje
         r"(\d+[\.,]?\d*)\s*%",
