@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from services import settings
 from django.views import View
 from django.utils.decorators import method_decorator
+from core.utils import is_spam
 
 @method_decorator(csrf_exempt, name='dispatch')
 class Index (View):
@@ -51,22 +52,13 @@ class Index (View):
             # Get custom subject
             if input_name == "subject":
                 subject = input_value
-
-        # Detect blacklist emails in message content
-        is_spam = False
-        blackLiist_email_found = ""
-        message_clean = message.lower().strip()
-        blackLiist_emails = map (lambda elem : elem.to_email, models.BlackList.objects.all())
-        for blackLiist_email in blackLiist_emails:
-            blackLiist_email_clean = blackLiist_email.lower().strip()
-            if blackLiist_email_clean in message_clean:
-                is_spam = True
-                blackLiist_email_found = blackLiist_email
-                break
+            
+        # Detect spam in message content
+        is_spam = is_spam(message)
 
         if is_spam:
             # Dont send message and change subject in history
-            subject = f"Spam try from {blackLiist_email_found}"
+            subject = f"Spam try in {users[0].name}"
         else:
             # Send email 
             send_mail(
@@ -81,6 +73,7 @@ class Index (View):
         models.History.objects.create (
             user = users[0], 
             subject = subject,
+            body = message,
             sent = not is_spam    
         )
         
