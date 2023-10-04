@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test form with file</title>
+  <style>
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      margin: 0 auto;
+    }
+    input {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <form 
+    action="/contact-form/"
+    method="post"
+  >
+    {% csrf_token %}
+    
+    <!-- Contact inputs -->
+    <input type="text" name="name" placeholder="Name" value="sample name">
+    <input type="email" name="email" placeholder="Email" value="sample@mail.com">
+    <input type="text" name="message" placeholder="Message" value="sample message">
+    <input type="file" name="file">
+
+    <!-- Api inputs -->
+    <input type="hidden" name="api_key" value="6~Kd+&69A]H&&629@gE8?i3I*9>g0_">
+    <input type="hidden" name="user" value="daridev">
+
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>

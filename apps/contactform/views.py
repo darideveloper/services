@@ -1,11 +1,13 @@
-from contactform import models
-from django.http import HttpResponseRedirect, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.mail import send_mail
-from services import settings
 from django.views import View
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.decorators import method_decorator
+from services import settings
+from contactform import models
 from core.utils import get_is_spam, get_message_subject
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class Index (View):
@@ -46,6 +48,8 @@ class Index (View):
         # Detect spam in message content
         is_spam = get_is_spam(message)
 
+        # Get files from form
+
         if is_spam:
             # Dont send message and change subject in history
             subject = f"Spam try in {users[0].name}"
@@ -77,3 +81,10 @@ class Index (View):
                 "message": f"email sent",
                 "data": {}
             }, status=200)
+            
+class TestFormFile (View):
+    
+    def get (self, request):
+        """ Render html with form, with input file, for testing """
+        
+        return render (request, "contactform/test_form_file.html", {})
