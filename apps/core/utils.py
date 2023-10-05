@@ -55,7 +55,7 @@ def get_message_subject (inputs:dict) -> str:
             continue
 
         # Get body values
-        if input_name not in ["api_key", "redirect", "subject", "user"]:
+        if input_name not in ["api_key", "redirect", "subject", "user", "csrfmiddlewaretoken"]:
             message += f"{input_name}: {input_value}\n"
 
         # Get custom subject
