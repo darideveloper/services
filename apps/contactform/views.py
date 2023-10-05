@@ -1,3 +1,5 @@
+import os
+import tempfile
 from django.views import View
 from django.shortcuts import render
 from django.core.mail import EmailMessage
@@ -69,13 +71,10 @@ class Index (View):
                 for char in replace_chars:
                     file_name = file_name.replace(char, "_")
                     
-                # Save path
-                file_path = f"{settings.BASE_DIR}/media/{file_name}"
-                files_paths.append(file_path)
-                                
-                file_content = form_files[file].read()
-                with open (file_path, "wb") as file:
-                    file.write(file_content)
+                # Use a temporary directory to save the file
+                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                    temp_file.write(form_files[file].read())
+                    files_paths.append(temp_file.name)
             
         if is_spam:
             # Dont send message and change subject in history
@@ -121,6 +120,10 @@ class Index (View):
             message = message,
             sent = not is_spam    
         )
+        
+        # Delete temporal files
+        for temp_file_path in files_paths:
+            os.remove(temp_file_path)
         
         # Redirect or send response
         redirect = form_data.get("redirect", "")
