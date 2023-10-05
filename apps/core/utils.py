@@ -50,6 +50,10 @@ def get_message_subject (inputs:dict) -> str:
     subject = "New contact message!"
     for input_name, input_value in inputs.items():
 
+        # Skip file inputs
+        if "file" in input_name:
+            continue
+
         # Get body values
         if input_name not in ["api_key", "redirect", "subject", "user"]:
             message += f"{input_name}: {input_value}\n"

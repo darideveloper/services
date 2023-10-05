@@ -1,13 +1,12 @@
 from django.views import View
 from django.shortcuts import render
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.decorators import method_decorator
 from services import settings
 from contactform import models
 from core.utils import get_is_spam, get_message_subject
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class Index (View):
@@ -48,21 +47,45 @@ class Index (View):
         # Detect spam in message content
         is_spam = get_is_spam(message)
 
-        # Get files from form
+        # Get files from form and save in media
+        files_paths = []
+        form_files = request.FILES
+        if form_files:
+            for file in form_files:
+                file_name = form_files[file].name
+                
+                # Clean file name
+                replace_chars = [" ", "/", "\\", ":", "'", '"', "(", ")", "[", "]", "{", "}", "!", "?", "&", "#", "$", "%", "^", "*", "+", "=", "~", "`", "|", "<", ">"]
+                for char in replace_chars:
+                    file_name = file_name.replace(char, "_")
+                    
+                # Save path
+                file_path = f"{settings.BASE_DIR}/media/{file_name}"
+                files_paths.append(file_path)
+                                
+                file_content = form_files[file].read()
+                with open (file_path, "wb") as file:
+                    file.write(file_content)
 
         if is_spam:
             # Dont send message and change subject in history
             subject = f"Spam try in {users[0].name}"
         else:
-            # Send email 
-            send_mail(
+            # Send email (only if not spam)
+            
+            email = EmailMessage (
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                [users[0].to_email],
-                fail_silently=False,
+                [users[0].to_email],                
             )
+            
+            # Attach files
+            for file_path in files_paths:
+                email.attach_file(file_path)
 
+            email.send(fail_silently=False)
+            
         # Save in history
         models.History.objects.create (
             user = users[0], 
