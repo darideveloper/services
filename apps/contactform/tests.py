@@ -8,11 +8,19 @@ class TestViews (TestCase):
     
     def setUp (self):
         
-        # Create user
+        # Create users
+        self.sender = models.EmailSender.objects.create (
+            host="sample host",
+            port=1234,
+            username="sample username",
+            password="sample password",
+        )
+        
         self.user = models.User.objects.create (
             name="test",
             api_key="test",
-            to_email=settings.EMAIL_HOST_USER
+            to_email="sample@gmail.com",
+            email_sender=self.sender
         )
         
         # Default email info
@@ -50,6 +58,25 @@ class TestViews (TestCase):
         self.assertEqual (history_objects[0].subject, f"Spam try in {self.user.name}")
         self.assertEqual (history_objects[0].message, message)
         self.assertEqual (history_objects[0].sent, False)
+        
+    def test_no_sender (self):
+        """ Try to send email with sender no registered 
+            Expected: error response
+        """
+        
+        self.sender.delete ()
+        
+        # Send request
+        res = self.client.post (
+            reverse ("contactform_endpoint"),
+            self.default_info
+        )
+        
+        # Validate response
+        self.assertEqual (res.status_code, 404)
+        self.assertEqual (res.json()["status"], "error")
+        self.assertEqual (res.json()["message"], "email sender not found")
+        self.assertEqual (res.json()["data"], {})
     
     def test_invalid_api_key (self):
         """ Try to send a message with a invalid api key

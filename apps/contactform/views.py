@@ -4,6 +4,7 @@ from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect, JsonResponse
 from django.utils.decorators import method_decorator
+from django.core import mail
 from services import settings
 from contactform import models
 from core.utils import get_is_spam, get_message_subject
@@ -41,8 +42,17 @@ class Index (View):
                 "data": {}
             }, status=401)
 
-        # Format email body
+        # Format email body and user
+        user = users[0]
         message, subject = get_message_subject(form_data)
+        
+        # Get sender credentials
+        if not user.email_sender:
+            return JsonResponse ({
+                "status": "error",
+                "message": "email sender not found",
+                "data": {}
+            }, status=404)
         
         # Detect spam in message content
         is_spam = get_is_spam(message)
@@ -66,25 +76,43 @@ class Index (View):
                 file_content = form_files[file].read()
                 with open (file_path, "wb") as file:
                     file.write(file_content)
-
+            
         if is_spam:
             # Dont send message and change subject in history
-            subject = f"Spam try in {users[0].name}"
+            subject = f"Spam try in {user.name}"
         else:
             # Send email (only if not spam)
             
+            # Change email credentials
+            sender = user.email_sender
+            connection = mail.get_connection(
+                host=sender.host,
+                port=sender.port,
+                username=sender.username,
+                password=sender.password,
+                use_ssl=sender.use_ssl
+            )
+            connection.open ()
+            
+            # Create email 
             email = EmailMessage (
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                [users[0].to_email],                
+                subject=subject,
+                body=message,
+                from_email=sender.username,
+                to=[user.to_email],
             )
             
             # Attach files
             for file_path in files_paths:
                 email.attach_file(file_path)
 
-            email.send(fail_silently=False)
+            # Send email
+            email.connection = connection
+            email.send(
+                fail_silently=False
+            )
+            
+            connection.close ()
             
         # Save in history
         models.History.objects.create (
