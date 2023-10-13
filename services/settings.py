@@ -145,3 +145,6 @@ EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL") == "True"
 FILE_UPLOAD_HANDLERS = [
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 ]
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
