@@ -1,5 +1,4 @@
 import os
-import tempfile
 from django.views import View
 from django.shortcuts import render
 from django.core.mail import EmailMessage
@@ -66,16 +65,31 @@ class Index (View):
             for file in form_files:
                 file_name = form_files[file].name
                 
+                # File data (bytes)
+                file_data = form_files[file].read()
+                
                 # Clean file name
                 replace_chars = [" ", "/", "\\", ":", "'", '"', "(", ")", "[", "]", "{", "}", "!", "?", "&", "#", "$", "%", "^", "*", "+", "=", "~", "`", "|", "<", ">"]
                 for char in replace_chars:
                     file_name = file_name.replace(char, "_")
                     
-                # Use a temporary directory to save the file
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    temp_file.write(form_files[file].read())
-                    files_paths.append(temp_file.name)
-            
+                # Add hash to file name
+                file_base = file_name.split(".")[0]
+                extention = file_name.split(".")[-1].lower()
+                file_name = f"{file_base}_{hash(file_data)}.{extention}"
+                
+                # Create media folder if not exists
+                if not os.path.exists(settings.MEDIA_ROOT):
+                    os.makedirs(settings.MEDIA_ROOT)
+                                    
+                # Save file in media folder
+                file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+                with open(file_path, "wb") as f:
+                    f.write(file_data)
+                    
+                # Save file path
+                files_paths.append(file_path)
+                
         if is_spam:
             # Dont send message and change subject in history
             subject = f"Spam try in {user.name}"
