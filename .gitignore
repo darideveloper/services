@@ -1,3 +1,4 @@
 .env*
 *.bat
 media/*
+backup-db.sql
