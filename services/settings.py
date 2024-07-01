@@ -3,7 +3,7 @@ import sys
 import django_heroku
 from dotenv import load_dotenv
 
-ENV = "dev"
+ENV = "prod"
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -11,10 +11,10 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # load environment variables
 if ENV == "dev":
-    print ("running in dev environment")
+    print("running in dev environment")
     load_dotenv = load_dotenv(os.path.join(BASE_DIR, '.env.dev'))
 elif ENV == "prod":
-    print ("running in prod environment")
+    print("running in prod environment")
     load_dotenv = load_dotenv(os.path.join(BASE_DIR, '.env.prod'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
