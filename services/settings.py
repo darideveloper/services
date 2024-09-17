@@ -151,6 +151,7 @@ if not DEBUG:
 
 CSRF_TRUSTED_ORIGINS = [
     "https://services.app.darideveloper.com",
+    "https://services.darideveloper.com",
     "http://127.0.0.1:8000",
     "http://localhost:8000",
 ]
