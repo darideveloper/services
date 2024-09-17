@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.core import mail
 from services import settings
 from contactform import models
-from core.utils import get_is_spam, get_message_subject
+from utils.mails import get_is_spam, get_message_subject
 
 
 @method_decorator(csrf_exempt, name='dispatch')

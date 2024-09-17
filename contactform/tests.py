@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from contactform import models
-from core.utils import get_message_subject
+from utils.mails import get_message_subject
 
 
 class TestViews (TestCase):
