@@ -1,5 +1,4 @@
 import os
-import sys
 import django_heroku
 from dotenv import load_dotenv
 
