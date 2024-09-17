@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
-from apps.contactform import urls as contactform_urls
-from apps.core import views as core_views
+from contactform import urls as contactform_urls
+from core import views as core_views
 
 
 urlpatterns = [
