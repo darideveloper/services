@@ -8,4 +8,5 @@ urlpatterns = [
     path('', core_views.Index.as_view(), name='index'),
     path('admin/', admin.site.urls),
     path('contact-form/', include(contactform_urls)),
+    path('stripe-api/', include('stripe_api.urls')),
 ]
