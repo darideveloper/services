@@ -21,6 +21,7 @@ DEBUG = os.environ.get("DEBUG") == "True"
 
 # Apps
 INSTALLED_APPS = [
+    'stripe_api',
     'contactform',
     'core',
     'django.contrib.admin',
