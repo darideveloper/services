@@ -139,10 +139,6 @@ class Index (View):
             sent=not is_spam
         )
 
-        # Delete temporal files
-        for temp_file_path in files_paths:
-            os.remove(temp_file_path)
-
         # Redirect or send response
         redirect = form_data.get("redirect", "")
         if redirect:
