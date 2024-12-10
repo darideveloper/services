@@ -270,6 +270,7 @@ class TestViews (TestCase):
         unrequired_field_names = [
             "et_pb_",
             "_wp",
+            "token",
         ]
         for unrequired_field_name in unrequired_field_names:
             self.default_info[unrequired_field_name] = "sample value"

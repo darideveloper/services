@@ -77,6 +77,7 @@ def get_message_subject(inputs: dict) -> str:
             # wordpress fields
             "et_pb_",
             "_wp",
+            "token",
         ]
         skip = False
         for skip_field in skip_fields:
