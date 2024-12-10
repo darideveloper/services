@@ -11,8 +11,8 @@ class ContactFormUserAdmin(admin.ModelAdmin):
 @admin.register(models.History)
 class ContactFormHistoryAdmin(admin.ModelAdmin):
     list_display = ('datetime', 'user', 'subject', 'sent')
-    ordering = ['datetime', 'sent']
-    list_filter = ['user', 'sent']
+    ordering = ['-datetime', 'sent']
+    list_filter = ['sent', 'user']
 
 
 @admin.register(models.EmailSender)
