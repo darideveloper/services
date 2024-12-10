@@ -47,7 +47,7 @@ class Index (View):
         # Format email body and user
         user = users[0]
         message, subject = get_message_subject(form_data)
-        print(">>>>>>", message, subject, "<<<<<<<<")
+        print(message, subject)
 
         # Get sender credentials
         if not user.email_sender:

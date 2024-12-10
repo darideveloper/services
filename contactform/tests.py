@@ -1,3 +1,4 @@
+from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 from contactform import models
@@ -59,6 +60,9 @@ class TestViews (TestCase):
                          self.user.name}")
         self.assertEqual(history_objects[0].message, message)
         self.assertEqual(history_objects[0].sent, False)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_no_sender(self):
         """ Try to send email with sender no registered
@@ -78,6 +82,9 @@ class TestViews (TestCase):
         self.assertEqual(res.json()["status"], "error")
         self.assertEqual(res.json()["message"], "email sender not found")
         self.assertEqual(res.json()["data"], {})
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_invalid_api_key(self):
         """ Try to send a message with a invalid api key
@@ -100,6 +107,9 @@ class TestViews (TestCase):
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 0)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_invalid_user(self):
         """ Try to send a message with a invalid user
@@ -122,6 +132,9 @@ class TestViews (TestCase):
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 0)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_missing_api_key(self):
         """ Try to send a message without api key
@@ -144,6 +157,9 @@ class TestViews (TestCase):
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 0)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_missing_subject(self):
         """ Try to send a message without subject
@@ -170,6 +186,14 @@ class TestViews (TestCase):
         self.assertEqual(history_objects[0].subject, subject)
         self.assertEqual(history_objects[0].message, message)
         self.assertEqual(history_objects[0].sent, True)
+        
+        # Validate data in email
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, subject)
+        self.assertEqual(email.body, message)
+        self.assertEqual(email.from_email, self.user.email_sender.username)
+        self.assertEqual(email.to, [self.user.to_email])
 
     def test_missing_user(self):
         """ Try to send a message without user
@@ -192,6 +216,9 @@ class TestViews (TestCase):
         # Validate info in models
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 0)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_success_redirect(self):
         """ Try to send a message with all inputs
@@ -227,13 +254,21 @@ class TestViews (TestCase):
         self.assertEqual(res.json()["data"], {})
         
         # Validate email content
-        message, _ = get_message_subject(self.default_info)
+        message, subject = get_message_subject(self.default_info)
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 1)
         self.assertEqual(history_objects[0].user, self.user)
         self.assertEqual(history_objects[0].subject, self.default_info["subject"])
         self.assertEqual(history_objects[0].message, message)
         self.assertEqual(history_objects[0].sent, True)
+        
+        # Validate data in email
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, subject)
+        self.assertEqual(email.body, message)
+        self.assertEqual(email.from_email, self.user.email_sender.username)
+        self.assertEqual(email.to, [self.user.to_email])
         
     def test_success_extra_inputs(self):
         """ Try to send a message with all inputs, but with extra inputs
@@ -257,9 +292,17 @@ class TestViews (TestCase):
         self.assertEqual(res.status_code, 302)
         self.assertEqual(res.url, self.default_info["redirect"])
         
-        # Validate email content
+        # validate content in history
         message, _ = get_message_subject(self.default_info)
-        self.assertNotIn(unrequired_field_name, message)
+        history_objects = models.History.objects.all()
+        self.assertEqual(history_objects.count(), 1)
+        for unrequired_field_name in unrequired_field_names:
+            self.assertNotIn(unrequired_field_name, history_objects[0].message)
+            
+        # Validate content in email
+        email = mail.outbox[0]
+        for unrequired_field_name in unrequired_field_names:
+            self.assertNotIn(unrequired_field_name, email.body)
         
     def test_empty_message(self):
         """ Try to send a message without valid inputs
@@ -292,3 +335,6 @@ class TestViews (TestCase):
         self.assertEqual(history_objects[0].subject, f"Spam try in {self.user.name}")
         self.assertEqual(history_objects[0].message, "")
         self.assertEqual(history_objects[0].sent, False)
+        
+        # Check no emails sent
+        self.assertEqual(len(mail.outbox), 0)

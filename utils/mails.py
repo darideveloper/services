@@ -86,7 +86,6 @@ def get_message_subject(inputs: dict) -> str:
                 break
         if skip:
             continue
-        print(input_name)
         message += f"{input_name}: {input_value}\n"
 
     return message, subject
