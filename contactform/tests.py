@@ -260,3 +260,34 @@ class TestViews (TestCase):
         # Validate email content
         message, _ = get_message_subject(self.default_info)
         self.assertNotIn(unrequired_field_name, message)
+        
+    def test_empty_message(self):
+        """ Try to send a message without valid inputs
+            Expected: error response
+        """
+
+        # Add no required inputs
+        unrequired_field_names = [
+            "et_pb_",
+            "_wp",
+        ]
+        for unrequired_field_name in unrequired_field_names:
+            self.default_info[unrequired_field_name] = "sample value"
+        del self.default_info["subject"]
+        del self.default_info["sample input"]
+        res = self.client.post(
+            reverse("contactform_endpoint"),
+            self.default_info
+        )
+
+        # Validate redirect
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, self.default_info["redirect"])
+        
+        # Spom detection
+        history_objects = models.History.objects.all()
+        self.assertEqual(history_objects.count(), 1)
+        self.assertEqual(history_objects[0].user, self.user)
+        self.assertEqual(history_objects[0].subject, f"Spam try in {self.user.name}")
+        self.assertEqual(history_objects[0].message, "")
+        self.assertEqual(history_objects[0].sent, False)

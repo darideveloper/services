@@ -10,6 +10,10 @@ def get_is_spam(text: str) -> bool:
     Returns:
         bool: true if text is spam
     """
+    
+    # Mask as spam empty messages
+    if not text:
+        return True
 
     regexs = [
         # links
