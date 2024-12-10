@@ -220,8 +220,43 @@ class TestViews (TestCase):
             self.default_info
         )
 
-        # Validate redirect
+        # Validate response
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json()["status"], "success")
         self.assertEqual(res.json()["message"], "email sent")
         self.assertEqual(res.json()["data"], {})
+        
+        # Validate email content
+        message, _ = get_message_subject(self.default_info)
+        history_objects = models.History.objects.all()
+        self.assertEqual(history_objects.count(), 1)
+        self.assertEqual(history_objects[0].user, self.user)
+        self.assertEqual(history_objects[0].subject, self.default_info["subject"])
+        self.assertEqual(history_objects[0].message, message)
+        self.assertEqual(history_objects[0].sent, True)
+        
+    def test_success_extra_inputs(self):
+        """ Try to send a message with all inputs, but with extra inputs
+            (inputs to ignore)
+            Expected: regular response
+        """
+
+        # Add no required inputs
+        unrequired_field_names = [
+            "et_pb_",
+            "_wp",
+        ]
+        for unrequired_field_name in unrequired_field_names:
+            self.default_info[unrequired_field_name] = "sample value"
+        res = self.client.post(
+            reverse("contactform_endpoint"),
+            self.default_info
+        )
+
+        # Validate redirect
+        self.assertEqual(res.status_code, 302)
+        self.assertEqual(res.url, self.default_info["redirect"])
+        
+        # Validate email content
+        message, _ = get_message_subject(self.default_info)
+        self.assertNotIn(unrequired_field_name, message)

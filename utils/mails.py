@@ -52,19 +52,36 @@ def get_message_subject(inputs: dict) -> str:
     message = ""
     subject = "New contact message!"
     for input_name, input_value in inputs.items():
-
-        # Skip file inputs
+        
+        # Skip unrelated fields
         if "file" in input_name:
             continue
-
-        # Get body values
-        skip_fields = ["api_key", "redirect",
-                       "subject", "user", "csrfmiddlewaretoken"]
-        if input_name not in skip_fields:
-            message += f"{input_name}: {input_value}\n"
 
         # Get custom subject
         if input_name == "subject":
             subject = input_value
+            
+        # Get body values
+        skip_fields = [
+            # User field
+            "api_key",
+            "redirect",
+            "subject",
+            "user",
+            # Django field
+            "csrfmiddlewaretoken",
+            # wordpress fields
+            "et_pb_",
+            "_wp",
+        ]
+        skip = False
+        for skip_field in skip_fields:
+            if skip_field in input_name:
+                skip = True
+                break
+        if skip:
+            continue
+        print(input_name)
+        message += f"{input_name}: {input_value}\n"
 
     return message, subject

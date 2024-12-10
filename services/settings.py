@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 
 ENV = "prod"
@@ -68,21 +69,35 @@ WSGI_APPLICATION = 'services.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get("DB_ENGINE"),
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST"),
-        'PORT': os.environ.get("DB_PORT"),
-        'TEST': {
-            'NAME': 'test_comunidad_mc',
-        },
+if IS_TESTING:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'testing.sqlite3'),
+        }
     }
-}
+else:
+    
+    options = {}
+    if os.environ.get("DB_ENGINE") == "django.db.backends.mysql":
+        options = {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'charset': 'utf8mb4',
+        }
+    
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get("DB_ENGINE"),
+            'NAME': os.environ.get("DB_NAME"),
+            'USER': os.environ.get("DB_USER"),
+            'PASSWORD': os.environ.get("DB_PASSWORD"),
+            'HOST': os.environ.get("DB_HOST"),
+            'PORT': os.environ.get("DB_PORT"),
+            'OPTIONS': options,
+        }
+    }
 
 
 # Password validation
