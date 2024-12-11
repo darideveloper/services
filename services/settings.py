@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'stripe_api',
     'contactform',
     'core',
+    'ai',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',

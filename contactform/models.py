@@ -25,7 +25,6 @@ class History (models.Model):
         return f"{self.datetime} {self.user.name} {self.subject}"
 
     class Meta:
-        ordering = ["-datetime"]
         verbose_name = "History email"
         verbose_name_plural = "History emails"
 
