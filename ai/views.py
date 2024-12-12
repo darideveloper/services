@@ -2,16 +2,20 @@ import json
 
 from openai import OpenAI
 
-from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 from ai import models
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class Index (View):
+class Index (APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
     def post(self, request):
         """ Send data to huggingface model and return response """
