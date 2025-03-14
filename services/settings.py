@@ -23,16 +23,22 @@ DEBUG = os.environ.get("DEBUG") == "True"
 
 # Apps
 INSTALLED_APPS = [
-    'stripe_api',
-    'contactform',
-    'core',
-    'corsheaders',
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Local spps
+    'stripe_api',
+    'contactform',
+    'core',
+    'socials',
+    
+    # Installed apps
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
 ]
