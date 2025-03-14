@@ -2,11 +2,12 @@ import os
 import sys
 from dotenv import load_dotenv
 
-ENV = "prod"
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+load_dotenv()
+ENV = os.environ.get("ENV")
 
 # load environment variables
 if ENV == "dev":
@@ -25,7 +26,6 @@ INSTALLED_APPS = [
     'stripe_api',
     'contactform',
     'core',
-    'ai',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
