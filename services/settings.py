@@ -148,15 +148,17 @@ ALLOWED_HOSTS = ['*']
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Simplified static file serving.
 if DEBUG:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    MEDIA_ROOT = "/media/"
 
 # Emails
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
