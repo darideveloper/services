@@ -23,9 +23,9 @@ class VideoAdmin(admin.ModelAdmin):
                     "title",
                     "description",
                     "tags",
-                    "file",
+                    "file_s3_url",
                     "posted",
-                    "odoo_tasks",
+                    "odoo_task",
                 )
             },
         ),

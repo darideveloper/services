@@ -8,9 +8,9 @@ class Video(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     tags = models.CharField(max_length=255)
-    file = models.FileField(upload_to='videos/')
+    file_s3_url = models.URLField()
     posted = models.BooleanField(default=False)
-    odoo_tasks = models.URLField()
+    odoo_task = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
