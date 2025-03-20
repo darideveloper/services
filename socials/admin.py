@@ -6,14 +6,12 @@ from socials import models
 class VideoAdmin(admin.ModelAdmin):
     list_display = (
         "title",
-        "description",
-        "tags",
         "posted",
         "created_at",
         "updated_at",
     )
     list_filter = ("posted", "created_at", "updated_at")
-    search_fields = ("title", "description", "tags")
+    search_fields = ("title", "description", "tags", "tech_context"),
     readonly_fields = ("created_at", "updated_at")
     fieldsets = (
         (
@@ -22,8 +20,9 @@ class VideoAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "description",
+                    "tech_context",
                     "tags",
-                    "file_s3_url",
+                    "video",
                     "posted",
                     "odoo_task",
                 )

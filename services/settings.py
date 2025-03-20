@@ -188,3 +188,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'utils.handlers.custom_exception_handler'
 }
+
+# Max size in bytes (500MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 524288000
+FILE_UPLOAD_MAX_MEMORY_SIZE = 524288000
