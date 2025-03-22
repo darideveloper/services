@@ -9,7 +9,7 @@ class Video(models.Model):
     description = models.TextField()
     tech_context = models.TextField()
     tags = models.CharField(max_length=255)
-    video = models.FileField(upload_to='videos/', null=True, blank=True)
+    video_drive_url = models.URLField(null=True, blank=True)
     posted = models.BooleanField(default=False)
     odoo_task = models.URLField()
     created_at = models.DateTimeField(auto_now_add=True)

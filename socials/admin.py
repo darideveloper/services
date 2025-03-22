@@ -22,7 +22,7 @@ class VideoAdmin(admin.ModelAdmin):
                     "description",
                     "tech_context",
                     "tags",
-                    "video",
+                    "video_drive_url",
                     "posted",
                     "odoo_task",
                 )
