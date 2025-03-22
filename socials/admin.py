@@ -11,7 +11,7 @@ class VideoAdmin(admin.ModelAdmin):
         "updated_at",
     )
     list_filter = ("posted", "created_at", "updated_at")
-    search_fields = ("title", "description", "tags", "tech_context"),
+    search_fields = ("title", "description", "tags", "context"),
     readonly_fields = ("created_at", "updated_at")
     fieldsets = (
         (
@@ -20,11 +20,11 @@ class VideoAdmin(admin.ModelAdmin):
                 "fields": (
                     "title",
                     "description",
-                    "tech_context",
+                    "context",
                     "tags",
                     "video_drive_url",
                     "posted",
-                    "odoo_task",
+                    "workflow_link",
                 )
             },
         ),
