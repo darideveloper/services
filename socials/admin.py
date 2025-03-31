@@ -5,29 +5,12 @@ from socials import models
 @admin.register(models.Video)
 class VideoAdmin(admin.ModelAdmin):
     list_display = (
-        "title",
+        "video_drive_name",
         "posted",
         "created_at",
         "updated_at",
     )
     list_filter = ("posted", "created_at", "updated_at")
-    search_fields = ("title", "description", "tags", "context"),
+    search_fields = ("video_drive_name", "description", "tags", "context"),
     readonly_fields = ("created_at", "updated_at")
-    fieldsets = (
-        (
-            None,
-            {
-                "fields": (
-                    "title",
-                    "description",
-                    "context",
-                    "tags",
-                    "video_drive_url",
-                    "posted",
-                    "workflow_link",
-                )
-            },
-        ),
-        ("Dates", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
-    )
     ordering = ("-id",)
