@@ -2,3 +2,4 @@
 *.bat
 media/*
 backup-db.sql
+**/__pycache__/
