@@ -23,6 +23,7 @@ class Api (View):
         web_page = request_json["url"]
         web_page_success = request_json.get("url_success", web_page + '?done=true')
         username = request_json["user"]
+        currency = request_json.get("currency", "usd")
         user = models.Credentilas.objects.filter(username=username).first()
 
         # Set api key
@@ -42,7 +43,7 @@ class Api (View):
             # Create product price
             stripe_price = stripe.Price.create(
                 unit_amount=int(product_data["price"] * 100),
-                currency="usd",
+                currency=currency,
                 product=stripe_product["id"],
                 tax_behavior="exclusive",
             )
