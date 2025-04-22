@@ -24,6 +24,7 @@ class Api (View):
         web_page_success = request_json.get("url_success", web_page + '?done=true')
         username = request_json["user"]
         currency = request_json.get("currency", "usd")
+        print(">>> currency", currency)
         user = models.Credentilas.objects.filter(username=username).first()
 
         # Set api key
