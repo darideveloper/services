@@ -58,7 +58,10 @@ class Index (View):
             }, status=404)
 
         # Detect spam in message content
-        is_spam = get_is_spam(message)
+        if user.check_spam:
+            is_spam = get_is_spam(message)
+        else:
+            is_spam = False
 
         # Get files from form and save in media
         files_paths = []

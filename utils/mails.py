@@ -23,7 +23,7 @@ def get_is_spam(text: str) -> bool:
         r"(\d+[\.,]?\d*)\s*(?:USD|usd)",
 
         # $ + amount
-        # r"\$(\d+[\.,]?\d*)",
+        r"\$(\d+[\.,]?\d*)",
 
         # special words
         r"(more\s*info|our\s*plans|seo|contact\s*us|discord|roi)",

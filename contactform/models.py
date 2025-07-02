@@ -9,6 +9,7 @@ class User (models.Model):
     to_email = models.CharField(max_length=250)
     email_sender = models.ForeignKey(
         "EmailSender", on_delete=models.SET_NULL, null=True)
+    check_spam = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

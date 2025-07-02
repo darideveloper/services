@@ -4,7 +4,7 @@ from contactform import models
 
 @admin.register(models.User)
 class ContactFormUserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'api_key', 'to_email')
+    list_display = ('name', 'api_key', 'to_email', 'check_spam')
     ordering = ['name']
 
 
