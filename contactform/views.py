@@ -135,6 +135,14 @@ class Index (View):
 
             connection.close()
 
+        # No save in history if no subject or message
+        if not subject or not message:
+            return JsonResponse({
+                "status": "success",
+                "message": "email not sent",
+                "data": {}
+            }, status=200)
+
         # Save in history
         models.History.objects.create(
             user=users[0],
