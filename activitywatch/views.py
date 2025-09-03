@@ -1,5 +1,7 @@
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
 from django.views import View
 import json
@@ -17,9 +19,9 @@ class ActivityWatchView(View):
         try:
             # Validate origin_key against available choices
             valid_origins = [choice[0] for choice in Activity.ORIGINS_OPTIONS]
+            error_message = "Invalid origin."
+            error_message += f" Must be one of: {', '.join(valid_origins)}"
             if origin_key not in valid_origins:
-                error_message = "Invalid origin."
-                error_message += f" Must be one of: {', '.join(valid_origins)}"
                 return JsonResponse(
                     {
                         "error": error_message,
@@ -52,10 +54,28 @@ class ActivityWatchView(View):
 
     def get(self, request, origin_key):
         try:
-            activities = Activity.objects.filter(origin=origin_key)
-            return JsonResponse(
-                {"activities": [activity.json_data for activity in activities]},
-                status=200,
+            # Get the last (most recent) activity for the given origin
+            activity = (
+                Activity.objects.filter(origin=origin_key)
+                .order_by("-created_at")
+                .first()
             )
+
+            if activity:
+                return JsonResponse(
+                    {
+                        "activity": activity.json_data,
+                        "id": activity.id,
+                        "origin": activity.origin,
+                        "created_at": activity.created_at.isoformat(),
+                    },
+                    status=200,
+                )
+            else:
+                return JsonResponse(
+                    {"message": f"No activities found for origin: {origin_key}"},
+                    status=404,
+                )
+
         except Exception as e:
             return JsonResponse({"error": f"An error occurred: {str(e)}"}, status=500)
