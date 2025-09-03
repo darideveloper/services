@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'contactform',
     'core',
     'ai',
+    'activitywatch',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
