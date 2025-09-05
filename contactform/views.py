@@ -1,4 +1,5 @@
 import os
+import json
 from django.views import View
 from django.shortcuts import render
 from django.core.mail import EmailMessage
@@ -17,8 +18,18 @@ class Index (View):
     def post(self, request):
         """ Send email and redirect """
 
-        # Get form data
-        form_data = request.POST.dict()
+        # Get form data from either form data or JSON
+        if request.content_type == 'application/json':
+            try:
+                form_data = json.loads(request.body)
+            except json.JSONDecodeError:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "invalid JSON data",
+                    "data": {}
+                }, status=400)
+        else:
+            form_data = request.POST.dict()
 
         # Check all inputs
         inputs_names = ["api_key", "user"]
