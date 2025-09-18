@@ -109,11 +109,9 @@ class Index (View):
                 # Save file path
                 files_paths.append(file_path)
 
-        if is_spam:
-            # Dont send message and change subject in history
-            subject = f"Spam try in {user.name}"
-        else:
-            # Send email (only if not spam)
+        # Only send email if not spam and we have valid content
+        if not is_spam and subject and message:
+            # Send email (only if not spam and we have valid content)
 
             # Change email credentials
             sender = user.email_sender
@@ -145,6 +143,9 @@ class Index (View):
             )
 
             connection.close()
+        elif is_spam:
+            # Dont send message and change subject in history
+            subject = f"Spam try in {user.name}"
 
         # No save in history if no subject or message
         if not subject or not message:
