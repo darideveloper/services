@@ -181,3 +181,5 @@ CORS_ALLOW_ALL_ORIGINS = True
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'utils.handlers.custom_exception_handler'
 }
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024
