@@ -69,6 +69,7 @@ class Api(View):
         currency = request_json.get("currency", "usd")
         collect_phone = request_json.get("collect_phone", False)
         collect_billing_address = request_json.get("collect_billing_address", False)
+        collect_shipping_address = request_json.get("collect_shipping_address", False)
         print(">>> currency", currency)
         user = models.Credentilas.objects.filter(username=username).first()
 
@@ -112,14 +113,17 @@ class Api(View):
                 "client_reference_id": username,
             }
             
+            # Collect extra data
             if collect_phone:
                 stripe_checkout_data["phone_number_collection"] = {"enabled": True}
             
             if collect_billing_address:
+                stripe_checkout_data["billing_address_collection"] = "required"
+                
+            if collect_shipping_address:
                 stripe_checkout_data["shipping_address_collection"] = {
                     "allowed_countries": MAIN_COUNTRIES
                 }
-                stripe_checkout_data["billing_address_collection"] = "required"
             
             checkout_session = stripe.checkout.Session.create(**stripe_checkout_data)
         except Exception as e:
