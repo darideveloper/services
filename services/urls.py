@@ -19,7 +19,7 @@ urlpatterns = [
     path('contact-form/', include(contactform_urls)),
     path('stripe-api/', include('stripe_api.urls')),
     path('ai/', include(ai_urls)),
-    path('activity-watch/', include('activitywatch.urls')),
+    # path('activity-watch/', include('activitywatch.urls')),
     
     # auth endpoint
     path('auth/login/', LoginView.as_view(), name='login'),
