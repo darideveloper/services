@@ -269,13 +269,15 @@ JAZZMIN_SETTINGS = {
 }
 
 
-# Cors
+# Cors & CSRF
 if os.getenv("CORS_ALLOWED_ORIGINS") != "None":
     CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
+else:
+    # Allow all origins for development
+    CORS_ALLOW_ALL_ORIGINS = True
 
 if os.getenv("CSRF_TRUSTED_ORIGINS") != "None":
     CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
-
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
