@@ -172,7 +172,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Bienvenido a DariDev Dashboard",
     "copyright": "Powered by Dari Developer",
     # Media
-    "site_logo": "core/imgs/logo-white.webp",
+    "site_logo": "core/imgs/logo.webp",
     "login_logo": "core/imgs/logo.webp",
     "login_logo_dark": "core/imgs/logo.webp",
     "site_logo_classes": "",
