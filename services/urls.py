@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from contactform import urls as contactform_urls
-from ai import urls as ai_urls
+# from ai import urls as ai_urls
 from core.views import LoginView, ProfileView
 
 
@@ -18,7 +18,7 @@ urlpatterns = [
     # Apps
     path('contact-form/', include(contactform_urls)),
     path('stripe-api/', include('stripe_api.urls')),
-    path('ai/', include(ai_urls)),
+    # path('ai/', include(ai_urls)),
     # path('activity-watch/', include('activitywatch.urls')),
     
     # auth endpoint
