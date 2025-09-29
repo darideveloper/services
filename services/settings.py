@@ -1,48 +1,64 @@
 import os
 import sys
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-ENV = "prod"
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+# Setup .env file
+load_dotenv()
+ENV = os.getenv("ENV")
+env_path = os.path.join(BASE_DIR, f".env.{ENV}")
+load_dotenv(env_path)
+print(f"\nEnvironment: {ENV}")
 
-# load environment variables
-if ENV == "dev":
-    print("running in dev environment")
-    load_dotenv = load_dotenv(os.path.join(BASE_DIR, ".env.dev"))
-elif ENV == "prod":
-    print("running in prod environment")
-    load_dotenv = load_dotenv(os.path.join(BASE_DIR, ".env.prod"))
+# Env variables
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+STORAGE_AWS = os.environ.get("STORAGE_AWS") == "True"
+HOST = os.getenv("HOST")
+TEST_HEADLESS = os.getenv("TEST_HEADLESS", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
+# EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS").split(",")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
-DEBUG = os.environ.get("DEBUG") == "True"
+print(f"DEBUG: {DEBUG}")
+print(f"STORAGE_AWS: {STORAGE_AWS}")
+print(f"HOST: {HOST}")
 
 # Apps
 INSTALLED_APPS = [
+    # Local apps
     "stripe_api",
     "contactform",
     "core",
     "blog",
     # 'ai',
     # 'activitywatch',
+    
+    # Installed apps
+    "jazzmin",
     "corsheaders",
+    "rest_framework",
+    "rest_framework.authtoken",
+    
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    "rest_framework.authtoken",
 ]
 
 MIDDLEWARE = [
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    # Manage static files
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # Cors
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -138,19 +154,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Allow all host headers
-ALLOWED_HOSTS = ["*"]
-
-STATIC_ROOT = os.path.join(PROJECT_ROOT, "staticfiles")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Simplified static file serving.
-if DEBUG:
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-else:
-    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Emails
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
@@ -159,27 +163,122 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL") == "True"
 
-FILE_UPLOAD_HANDLERS = [
-    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
-]
+# Jazzmin (layout template) settings
+JAZZMIN_SETTINGS = {
+    # Text
+    "site_title": "DariDev Dashboard",
+    "site_header": "Admin",
+    "site_brand": "DariDev Dashboard",
+    "welcome_sign": "Bienvenido a DariDev Dashboard",
+    "copyright": "Powered by Dari Developer",
+    # Media
+    "site_logo": "core/imgs/logo-white.webp",
+    "login_logo": "core/imgs/logo.webp",
+    "login_logo_dark": "core/imgs/logo.webp",
+    "site_logo_classes": "",
+    "site_icon": "core/imgs/favicon.ico",
+    # Search model in header
+    "search_model": [],
+    # Field name on user model that contains avatar
+    # ImageField/URLField/Charfield or a callable that receives the user
+    "user_avatar": None,
+    ############
+    # Top Menu #
+    ############
+    # Links to put along the top menu
+    "topmenu_links": [
+        # {"name": "Landing", "url": LANDING_HOST},
+    ],
+    #############
+    # User Menu #
+    #############
+    # Additional links to include in the user menu on the top right
+    # ("app" url type is not allowed)
+    "usermenu_links": [
+        # {"model": "auth.user"}
+    ],
+    #############
+    # Side Menu #
+    #############
+    # Whether to display the side menu
+    "show_sidebar": True,
+    # Whether to aut expand the menu
+    "navigation_expanded": True,
+    # Hide these apps when generating side menu e.g (auth)
+    "hide_apps": [],
+    # Hide these models when generating side menu (e.g auth.user)
+    "hide_models": [],
+    # List of apps (and/or models) to base side menu ordering off of
+    # (does not need to contain all apps/models)
+    "order_with_respect_to": [],
+    # Custom links to append to app groups, keyed on app name
+    "custom_links": {
+        # "books": [{
+        #     "name": "Make Messages",
+        #     "url": "make_messages",
+        #     "icon": "fas fa-comments",
+        #     "permissions": ["books.view_book"]
+        # }]
+    },
+    # Custom icons for side menu apps/models
+    # See https://fontawesome.com/icons?d=gallery&m=free
+    # for the full list of 5.13.0 free icon classes
+    "icons": {
+        # Auth models
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        # Blog models
+        "blog.Post": "fas fa-newspaper",
+        "blog.Image": "fas fa-image",
+    },
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    #################
+    # Related Modal #
+    #################
+    # Use modals instead of popups
+    "related_modal_active": False,
+    #############
+    # UI Tweaks #
+    #############
+    # Relative paths to custom CSS/JS scripts (must be present in static files)
+    "custom_css": "core/css/custom.css",
+    "custom_js": "core/js/custom.js",
+    # Whether to link font from fonts.googleapis.com
+    # (use custom_css to supply font otherwise)
+    "use_google_fonts_cdn": True,
+    # Whether to show the UI customizer on the sidebar
+    "show_ui_builder": False,
+    ###############
+    # Change view #
+    ###############
+    # Render out the change view as a single form, or in tabs, current options are
+    # - single
+    # - horizontal_tabs (default)
+    # - vertical_tabs
+    # - collapsible
+    # - carousel
+    "changeform_format": "horizontal_tabs",
+    # override change forms on a per modeladmin basis
+    # "changeform_format_overrides": {
+    #     "auth.user": "horizontal_tabs",
+    #     "auth.group": "carousel"
+    # },
+}
+
+
+# Cors
+if os.getenv("CORS_ALLOWED_ORIGINS") != "None":
+    CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS").split(",")
+
+if os.getenv("CSRF_TRUSTED_ORIGINS") != "None":
+    CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
+
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
-
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://services.app.darideveloper.com",
-    "https://services.darideveloper.com",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
-
-CORS_ALLOW_ALL_ORIGINS = True
-
-REST_FRAMEWORK = {"EXCEPTION_HANDLER": "utils.handlers.custom_exception_handler"}
-
-DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024
 
 
 # Storage settings
@@ -219,3 +318,23 @@ else:
     # Static files (CSS, JavaScript, Images)
     STATIC_URL = "/static/"
     MEDIA_URL = "/media/"
+
+# Setup drf
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "core.pagination.CustomPageNumberPagination",
+    "PAGE_SIZE": 12,
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    "EXCEPTION_HANDLER": "utils.handlers.custom_exception_handler",
+}
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024
+
+# Global datetime format
+DATE_FORMAT = "d/b/Y"
+TIME_FORMAT = "H:i"
+DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
+USE_L10N = False
