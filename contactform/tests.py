@@ -56,8 +56,7 @@ class TestViews (TestCase):
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 1)
         self.assertEqual(history_objects[0].user, self.user)
-        self.assertEqual(history_objects[0].subject, f"Spam try in {
-                         self.user.name}")
+        self.assertEqual(history_objects[0].subject, "Spam try in test")
         self.assertEqual(history_objects[0].message, message)
         self.assertEqual(history_objects[0].sent, False)
         
@@ -304,9 +303,9 @@ class TestViews (TestCase):
         for unrequired_field_name in unrequired_field_names:
             self.assertNotIn(unrequired_field_name, email.body)
         
-    def test_empty_message(self):
-        """ Try to send a message without valid inputs
-            Expected: error response
+    def test_redirect(self):
+        """ Try to send a message with all inputs, but with redirect
+            Expected: redirect response
         """
 
         # Add no required inputs
@@ -317,8 +316,6 @@ class TestViews (TestCase):
         ]
         for unrequired_field_name in unrequired_field_names:
             self.default_info[unrequired_field_name] = "sample value"
-        del self.default_info["subject"]
-        del self.default_info["sample input"]
         res = self.client.post(
             reverse("contactform_endpoint"),
             self.default_info
@@ -332,9 +329,8 @@ class TestViews (TestCase):
         history_objects = models.History.objects.all()
         self.assertEqual(history_objects.count(), 1)
         self.assertEqual(history_objects[0].user, self.user)
-        self.assertEqual(history_objects[0].subject, f"Spam try in {self.user.name}")
-        self.assertEqual(history_objects[0].message, "")
-        self.assertEqual(history_objects[0].sent, False)
+        self.assertEqual(history_objects[0].subject, self.default_info["subject"])
+        self.assertEqual(history_objects[0].sent, True)
         
         # Check no emails sent
-        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(len(mail.outbox), 1)
