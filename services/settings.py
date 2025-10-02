@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "blog",
     # 'ai',
     # 'activitywatch',
+    'db_backup',
     
     # Installed apps
     "jazzmin",
