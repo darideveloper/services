@@ -232,6 +232,13 @@ JAZZMIN_SETTINGS = {
         # Blog models
         "blog.Post": "fas fa-newspaper",
         "blog.Image": "fas fa-image",
+        # contactform models
+        "contactform.User": "fas fa-user-circle",
+        "contactform.History": "fas fa-envelope-open",
+        "contactform.EmailSender": "fas fa-lock",
+        # db_backup models
+        "db_backup.Backup": "fas fa-database",
+        "db_backup.Credentials": "fas fa-key",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
@@ -251,7 +258,7 @@ JAZZMIN_SETTINGS = {
     # (use custom_css to supply font otherwise)
     "use_google_fonts_cdn": True,
     # Whether to show the UI customizer on the sidebar
-    "show_ui_builder": False,
+    "show_ui_builder": True,
     ###############
     # Change view #
     ###############
