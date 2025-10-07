@@ -14,7 +14,7 @@ class CredentialsAdmin(admin.ModelAdmin):
 
 @admin.register(models.Backup)
 class BackupAdmin(admin.ModelAdmin):
-    list_display = ("credentials", "backup_file")
+    list_display = ("credentials", "backup_file", "created_at")
     list_filter = ("credentials", "created_at")
     readonly_fields = ("created_at", "updated_at")
     ordering = ("-created_at",)
