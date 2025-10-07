@@ -9,6 +9,7 @@ class Credentials(models.Model):
     host = models.CharField(max_length=100)
     port = models.IntegerField()
     database = models.CharField(max_length=100)
+    backups_to_keep = models.IntegerField(default=10)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

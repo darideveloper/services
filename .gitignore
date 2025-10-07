@@ -4,3 +4,4 @@ media/*
 backup-db.sql
 **/__pycache__/
 staticfiles/*
+backups/*
