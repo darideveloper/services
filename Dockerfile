@@ -15,7 +15,7 @@ COPY . /app/
 
 # Install system dependencies (e.g., for PostgreSQL support)
 RUN apt-get update && apt-get install -y \
-    libpq-dev gcc \
+    libpq-dev gcc postgresql-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
