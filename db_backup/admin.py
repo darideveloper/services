@@ -5,7 +5,7 @@ from db_backup import models
 
 @admin.register(models.Credentials)
 class CredentialsAdmin(admin.ModelAdmin):
-    list_display = ("project", "username", "host", "port", "database")
+    list_display = ("project", "username", "host", "port", "database", "enabled")
     search_fields = ("project", "username", "host", "port", "database")
     list_filter = ("username", "host", "database")
     readonly_fields = ("created_at", "updated_at")

@@ -77,7 +77,7 @@ class Command(BaseCommand):
             os.makedirs(backup_dir)
 
         # Access to each db porgressl credential
-        credentials = models.Credentials.objects.all()
+        credentials = models.Credentials.objects.filter(enabled=True)
 
         for credential in credentials:
 

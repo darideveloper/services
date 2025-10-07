@@ -10,11 +10,12 @@ class Credentials(models.Model):
     port = models.IntegerField()
     database = models.CharField(max_length=100)
     backups_to_keep = models.IntegerField(default=10)
+    enabled = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.username} - {self.host}:{self.port} - {self.database}"
+        return f"{self.project} - {self.host}:{self.port}"
     
     class Meta:
         verbose_name = "Credentials"
@@ -29,7 +30,7 @@ class Backup(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.credentials.username} - {self.backup_file.name}"
+        return f"{self.credentials.project} - {self.backup_file.name}"
     
     class Meta:
         verbose_name = "Backup"
