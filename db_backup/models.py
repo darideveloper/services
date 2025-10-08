@@ -1,4 +1,5 @@
 from django.db import models
+from services.storage_backends import PrivateMediaStorage
 
 
 class Credentials(models.Model):
@@ -16,7 +17,7 @@ class Credentials(models.Model):
 
     def __str__(self):
         return f"{self.project} - {self.host}:{self.port}"
-    
+
     class Meta:
         verbose_name = "Credentials"
         verbose_name_plural = "Credentials"
@@ -25,13 +26,13 @@ class Credentials(models.Model):
 class Backup(models.Model):
     id = models.AutoField(primary_key=True)
     credentials = models.ForeignKey(Credentials, on_delete=models.CASCADE)
-    backup_file = models.FileField(upload_to="backups/")
+    backup_file = models.FileField(upload_to="backups/", storage=PrivateMediaStorage())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"{self.credentials.project} - {self.backup_file.name}"
-    
+
     class Meta:
         verbose_name = "Backup"
         verbose_name_plural = "Backups"
