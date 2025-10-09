@@ -97,12 +97,13 @@ class Index (View):
                 extention = file_name.split(".")[-1].lower()
                 file_name = f"{file_base}_{hash(file_data)}.{extention}"
 
-                # Create media folder if not exists
-                if not os.path.exists(settings.MEDIA_ROOT):
-                    os.makedirs(settings.MEDIA_ROOT)
+                # Create temp media folder if not exists
+                temp_media_folder = os.path.join(settings.BASE_DIR, "media", "temp")
+                if not os.path.exists(temp_media_folder):
+                    os.makedirs(temp_media_folder)
 
                 # Save file in media folder
-                file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+                file_path = os.path.join(temp_media_folder, file_name)
                 with open(file_path, "wb") as f:
                     f.write(file_data)
 
