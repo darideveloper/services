@@ -26,6 +26,9 @@ RUN pip install -r requirements.txt
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
+# Run custom scripts
+RUN python manage.py submit_test_forms
+
 # Expose the port that Django/Gunicorn will run on
 EXPOSE 80
 

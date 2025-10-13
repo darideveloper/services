@@ -24,6 +24,12 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 # EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS").split(",")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 
+# Test env variables
+TEST_CAKES_USER = os.getenv("TEST_CAKES_USER")
+TEST_CAKES_API_KEY = os.getenv("TEST_CAKES_API_KEY")
+TEST_DARIDEV_USER = os.getenv("TEST_DARIDEV_USER")
+TEST_DARIDEV_API_KEY = os.getenv("TEST_DARIDEV_API_KEY")
+
 print(f"DEBUG: {DEBUG}")
 print(f"STORAGE_AWS: {STORAGE_AWS}")
 print(f"HOST: {HOST}")
