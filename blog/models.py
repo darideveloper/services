@@ -7,11 +7,19 @@ class Post(models.Model):
         ("es", "Español"),
         ("en", "Inglés"),
     )
+    STATUSES = (
+        ("draft", "Borrador"),
+        ("done", "Listo para publicar"),
+        ("published", "Publicado"),
+    )
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, verbose_name="Título")
     slug = models.SlugField(
         max_length=255, verbose_name="Slug", unique=True, blank=True, null=True
+    )
+    status = models.CharField(
+        max_length=20, choices=STATUSES, default="draft", verbose_name="Estado"
     )
     lang = models.CharField(
         max_length=2, choices=LANGS, default="es", verbose_name="Idioma"
