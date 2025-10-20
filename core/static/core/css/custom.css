@@ -81,4 +81,22 @@ h1 img {
 
 .select2.select2-container {
   width: 100% !important;
+}
+
+.rendered-media {
+  display: block;
+  height: auto;
+}
+.rendered-media.rendered-image {
+  height: 60px;
+}
+.rendered-media.rendered-icon {
+  width: 35px;
+}
+.rendered-media.rendered-video {
+  width: 300px;
+}
+.rendered-media.rendered-audio {
+  width: 300px;
+  height: 50px;
 }/*# sourceMappingURL=custom.css.map */
